@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Contact — EduPortal Pro{% endblock %}
+{% block nav_contact %}active{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+    <div class="container" style="text-align:center">
+        <h1 class="page-title">Contact Us</h1>
+        <p class="page-subtitle">Have a question or feedback? We'd love to hear from you.</p>
+    </div>
+</div>
+
+<section class="section-pad">
+    <div class="container">
+        <div class="contact-grid">
+            <div class="contact-info">
+                <h2 class="section-heading">Get in Touch</h2>
+                <div class="contact-item">
+                    <div class="contact-icon">📧</div>
+                    <div>
+                        <div class="contact-label">Email</div>
+                        <div class="contact-val">ashitosh2728@gmail.com</div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">🌍</div>
+                    <div>
+                        <div class="contact-label">Location</div>
+                        <div class="contact-val">Bengaluru, India</div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">⏰</div>
+                    <div>
+                        <div class="contact-label">Support Hours</div>
+                        <div class="contact-val">Mon–Fri, 9am–6pm IST</div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <form method="post" class="contact-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="name" class="form-input" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" name="email" class="form-input" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Subject</label>
+                        <input type="text" name="subject" class="form-input" placeholder="How can we help?">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Message</label>
+                        <textarea name="message" class="form-input" rows="5" placeholder="Your message..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                        Send Message ✉️
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

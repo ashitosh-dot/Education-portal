@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}{{ course.title }} — EduPortal Pro{% endblock %}
+{% block nav_courses %}active{% endblock %}
+
+{% block content %}
+<div class="page-hero" style="--course-color: {{ course.color }}">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="{% url 'courses' %}">Courses</a> <span>›</span> {{ course.title }}
+        </div>
+        <div class="course-hero-inner">
+            <div>
+                <div class="course-icon-lg">{{ course.icon }}</div>
+                <span class="course-level level-{{ course.level|lower }}">{{ course.level }}</span>
+                <h1 class="page-title" style="margin-top:12px">{{ course.title }}</h1>
+                <p class="page-subtitle">{{ course.description }}</p>
+                <div class="course-meta" style="margin-top:20px">
+                    <span>⏱ {{ course.duration }}</span>
+                    <span>🧠 {{ question_count }} questions in bank</span>
+                    <span>📚 {{ materials|length }} PDF{{ materials|length|pluralize }}</span>
+                </div>
+            </div>
+            <div class="course-action-box">
+                <div class="action-box-title">Ready to Test Your Knowledge?</div>
+                {% if question_count >= 5 %}
+                <a href="{% url 'start_test' course.id %}" class="btn btn-primary btn-lg" style="width:100%;text-align:center">
+                    🧠 Start Aptitude Test
+                </a>
+                <p class="action-box-note">20 random questions • Pass 60% to earn certificate</p>
+                {% else %}
+                <div class="action-box-warn">
+                    ⚠️ Not enough questions yet. Admin needs to add more questions to enable tests.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="section-pad">
+    <div class="container">
+        <div class="two-col">
+            <!-- LEFT: Study Materials -->
+            <div>
+                <h2 class="section-heading">📄 Study Materials</h2>
+                {% if materials %}
+                <div class="materials-list">
+                    {% for mat in materials %}
+                    <div class="material-card">
+                        <div class="material-icon">📕</div>
+                        <div class="material-info">
+                            <div class="material-title">{{ mat.title }}</div>
+                            {% if mat.description %}
+                            <div class="material-desc">{{ mat.description }}</div>
+                            {% endif %}
+                            <div class="material-date">Added {{ mat.uploaded_at|date:"M d, Y" }}</div>
+                        </div>
+                        <div class="material-actions">
+                            <a href="{% url 'view_pdf' mat.id %}" class="btn btn-outline btn-xs" target="_blank">👁 Read</a>
+                            <a href="{% url 'download_pdf' mat.id %}" class="btn btn-primary btn-xs">⬇ Download</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state empty-sm">
+                    <div class="empty-icon">📄</div>
+                    <p>No PDF materials uploaded yet for this course.</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- RIGHT: Recent Results -->
+            <div>
+                <h2 class="section-heading">📊 Recent Test Results</h2>
+                {% if recent_results %}
+                <div class="results-list">
+                    {% for result in recent_results %}
+                    <div class="result-row {% if result.passed %}result-pass{% else %}result-fail{% endif %}">
+                        <div class="result-name">{{ result.student_name }}</div>
+                        <div class="result-score">{{ result.score }}/{{ result.total_questions }}</div>
+                        <div class="result-pct">{{ result.percentage|floatformat:1 }}%</div>
+                        <div class="result-badge {% if result.passed %}badge-pass{% else %}badge-fail{% endif %}">
+                            {% if result.passed %}✅ Passed{% else %}❌ Failed{% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state empty-sm">
+                    <div class="empty-icon">📊</div>
+                    <p>No tests taken yet. Be the first!</p>
+                </div>
+                {% endif %}
+
+                <div style="margin-top:24px">
+                    <h2 class="section-heading">🏆 Test Info</h2>
+                    <div class="info-box">
+                        <div class="info-item"><span>Questions</span><strong>20 (random)</strong></div>
+                        <div class="info-item"><span>Pass Mark</span><strong>60% (12/20)</strong></div>
+                        <div class="info-item"><span>Certificate</span><strong>On passing</strong></div>
+                        <div class="info-item"><span>Re-attempts</span><strong>Unlimited</strong></div>
+                        <div class="info-item"><span>Question Bank</span><strong>{{ question_count }} questions</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

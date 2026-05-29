@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Courses — EduPortal Pro{% endblock %}
+{% block nav_courses %}active{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+    <div class="container">
+        <h1 class="page-title">All Courses</h1>
+        <p class="page-subtitle">Choose a course, study the material, and test your knowledge</p>
+    </div>
+</div>
+
+<section class="section-pad">
+    <div class="container">
+        <div class="courses-grid courses-grid-full">
+            {% for course in courses %}
+            <div class="course-card" style="--course-color: {{ course.color }}">
+                <div class="course-card-header">
+                    <span class="course-icon">{{ course.icon }}</span>
+                    <span class="course-level level-{{ course.level|lower }}">{{ course.level }}</span>
+                </div>
+                <h3 class="course-title">{{ course.title }}</h3>
+                <p class="course-desc">{{ course.description }}</p>
+                <div class="course-meta">
+                    <span>⏱ {{ course.duration }}</span>
+                    <span>📚 {{ course.material_count }} material{{ course.material_count|pluralize }}</span>
+                    <span>🧠 {{ course.question_count }} questions</span>
+                </div>
+                <div class="course-actions">
+                    <a href="{% url 'course_detail' course.id %}" class="btn btn-primary btn-sm">View Course →</a>
+                    {% if course.question_count >= 5 %}
+                    <a href="{% url 'start_test' course.id %}" class="btn btn-outline btn-sm">Take Test</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <div class="empty-icon">📚</div>
+                <h3>No courses available yet</h3>
+                <p>Please check back later or contact admin to add courses.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

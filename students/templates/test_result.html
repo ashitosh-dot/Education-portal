@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block title %}Test Result — EduPortal Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+.result-hero { padding:60px 0 40px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); text-align:center; }
+{% if passed %}
+.result-hero { background: linear-gradient(135deg, #052e16 0%, #064e3b 50%, #0f172a 100%); }
+{% else %}
+.result-hero { background: linear-gradient(135deg, #1c0a00 0%, #450a0a 50%, #0f172a 100%); }
+{% endif %}
+.result-badge-big { width:120px; height:120px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:3rem; margin:0 auto 24px; }
+{% if passed %}
+.result-badge-big { background: linear-gradient(135deg, #f59e0b, #fbbf24); box-shadow: 0 0 40px rgba(245,158,11,0.4); animation: trophy-pop 0.5s ease-out; }
+{% else %}
+.result-badge-big { background: linear-gradient(135deg, #7f1d1d, #ef4444); }
+{% endif %}
+@keyframes trophy-pop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+.result-name { color:#f8fafc; font-size:1.8rem; font-weight:700; margin-bottom:8px; }
+.result-course { color:#94a3b8; margin-bottom:24px; }
+.score-circle { width:160px; height:160px; border-radius:50%; border:6px solid {% if passed %}#f59e0b{% else %}#ef4444{% endif %}; display:flex; flex-direction:column; align-items:center; justify-content:center; margin:0 auto 24px; background:rgba(255,255,255,0.05); }
+.score-big { font-size:2.5rem; font-weight:800; color:{% if passed %}#f59e0b{% else %}#ef4444{% endif %}; }
+.score-total { color:#94a3b8; font-size:0.9rem; }
+.result-status { font-size:1.4rem; font-weight:700; color:{% if passed %}#4ade80{% else %}#f87171{% endif %}; margin-bottom:8px; }
+.result-pct { font-size:1.1rem; color:#94a3b8; }
+
+.cert-section { background:#fff; border-radius:16px; border:2px solid #f59e0b; padding:28px; text-align:center; margin:32px 0; box-shadow: 0 4px 20px rgba(245,158,11,0.15); }
+.cert-section h3 { color:#0f172a; font-size:1.3rem; margin-bottom:8px; }
+.cert-section p { color:#64748b; margin-bottom:20px; }
+
+.review-section { padding:40px 0; }
+.review-heading { font-size:1.4rem; font-weight:700; color:#0f172a; margin-bottom:24px; display:flex; align-items:center; gap:10px; }
+.answer-card { border-radius:12px; border:2px solid; padding:20px; margin-bottom:16px; }
+.answer-card.correct { border-color:#22c55e; background:#f0fdf4; }
+.answer-card.wrong { border-color:#ef4444; background:#fef2f2; }
+.answer-q-num { font-size:0.8rem; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+.answer-q-text { font-size:1rem; font-weight:600; color:#0f172a; margin-bottom:14px; line-height:1.5; }
+.answer-options { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+@media(max-width:580px){ .answer-options { grid-template-columns:1fr; } }
+.ans-opt { padding:8px 12px; border-radius:8px; font-size:0.9rem; display:flex; align-items:center; gap:8px; border:1px solid transparent; }
+.ans-opt.student-correct { background:#dcfce7; border-color:#22c55e; font-weight:600; }
+.ans-opt.student-wrong { background:#fee2e2; border-color:#ef4444; font-weight:600; }
+.ans-opt.is-correct { background:#dcfce7; border-color:#22c55e; }
+.ans-opt.normal { background:#f8fafc; border-color:#e2e8f0; }
+.opt-badge { font-size:0.75rem; }
+.explanation-box { background:#fef9c3; border-left:4px solid #f59e0b; padding:10px 14px; border-radius:0 8px 8px 0; font-size:0.9rem; color:#78350f; }
+.explanation-box strong { display:block; margin-bottom:4px; }
+
+.result-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; padding:20px 0 40px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="result-hero">
+    <div class="container">
+        <div class="result-badge-big">{% if passed %}🏆{% else %}📝{% endif %}</div>
+        <div class="result-name">{{ student_name }}</div>
+        <div class="result-course">{{ course.title }} — Aptitude Test</div>
+        <div class="score-circle">
+            <div class="score-big">{{ score }}</div>
+            <div class="score-total">out of {{ total }}</div>
+        </div>
+        <div class="result-status">{% if passed %}🎉 Congratulations! You Passed!{% else %}😔 Better Luck Next Time{% endif %}</div>
+        <div class="result-pct">Score: {{ percentage|floatformat:1 }}% {% if passed %}(Pass mark: 60%){% else %}(Need 60% to pass){% endif %}</div>
+    </div>
+</div>
+
+<div class="container">
+    {% if passed %}
+    <div class="cert-section">
+        <div style="font-size:3rem;margin-bottom:12px">🎓</div>
+        <h3>Your Certificate is Ready!</h3>
+        <p>You scored {{ percentage|floatformat:1 }}% and have earned a certificate for <strong>{{ course.title }}</strong>. Download it now!</p>
+        <a href="{% url 'download_certificate' test_result.id %}" class="btn btn-primary btn-lg">
+            ⬇ Download PDF Certificate
+        </a>
+    </div>
+    {% else %}
+    <div style="background:#fff;border:2px solid #e2e8f0;border-radius:16px;padding:28px;text-align:center;margin:32px 0">
+        <div style="font-size:2.5rem;margin-bottom:12px">📚</div>
+        <h3 style="color:#0f172a;margin-bottom:8px">You scored {{ percentage|floatformat:1 }}%</h3>
+        <p style="color:#64748b;margin-bottom:20px">Review your answers below, study the material, and try again! Questions change every attempt.</p>
+        <a href="{% url 'start_test' course.id %}" class="btn btn-primary">🔄 Try Again</a>
+    </div>
+    {% endif %}
+
+    <!-- ANSWER REVIEW -->
+    <section class="review-section">
+        <div class="review-heading">📋 Detailed Answer Review</div>
+        {% for rd in result_details %}
+        <div class="answer-card {% if rd.is_correct %}correct{% else %}wrong{% endif %}">
+            <div class="answer-q-num">Question {{ forloop.counter }}</div>
+            <div class="answer-q-text">{{ rd.text }}</div>
+            <div class="answer-options">
+                {% for key, text in rd.options.items %}
+                <div class="ans-opt
+                    {% if key == rd.correct and key == rd.chosen %}student-correct
+                    {% elif key == rd.chosen and key != rd.correct %}student-wrong
+                    {% elif key == rd.correct %}is-correct
+                    {% else %}normal{% endif %}">
+                    <span class="opt-badge">
+                        {% if key == rd.correct and key == rd.chosen %}✅
+                        {% elif key == rd.chosen and key != rd.correct %}❌
+                        {% elif key == rd.correct %}✔
+                        {% endif %}
+                    </span>
+                    <strong>{{ key }}.</strong> {{ text }}
+                </div>
+                {% endfor %}
+            </div>
+            {% if not rd.is_correct %}
+            <div style="color:#dc2626;font-size:0.85rem;margin-bottom:8px">
+                Your answer: <strong>{{ rd.chosen|default:"Not answered" }}</strong> &nbsp;|&nbsp;
+                Correct answer: <strong>{{ rd.correct }}</strong>
+            </div>
+            {% endif %}
+            {% if rd.explanation %}
+            <div class="explanation-box">
+                <strong>💡 Explanation:</strong>
+                {{ rd.explanation }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </section>
+
+    <div class="result-actions">
+        <a href="{% url 'course_detail' course.id %}" class="btn btn-outline">← Back to Course</a>
+        <a href="{% url 'start_test' course.id %}" class="btn btn-primary">🔄 Take Test Again</a>
+        {% if passed %}
+        <a href="{% url 'download_certificate' test_result.id %}" class="btn btn-primary" style="background:linear-gradient(135deg,#f59e0b,#d97706)">⬇ Download Certificate</a>
+        {% endif %}
+        <a href="{% url 'courses' %}" class="btn btn-outline">Browse More Courses →</a>
+    </div>
+</div>
+{% endblock %}

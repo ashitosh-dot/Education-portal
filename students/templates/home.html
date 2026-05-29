@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% block title %}EduPortal Pro — Learn Without Limits{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+        <div class="hero-badge">✨ Your Gateway to Excellence</div>
+        <h1 class="hero-title">
+            Learn. Test.<br>
+            <span class="gradient-text">Achieve.</span>
+        </h1>
+        <p class="hero-subtitle">
+            Explore curated courses, download study materials, take aptitude tests, and earn certificates — all in one place.
+        </p>
+        <div class="hero-actions">
+            <a href="{% url 'courses' %}" class="btn btn-primary btn-lg">
+                Explore Courses <span class="btn-arrow">→</span>
+            </a>
+            <a href="{% url 'leaderboard' %}" class="btn btn-outline btn-lg">View Leaderboard</a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-number">{{ courses.count }}</span>
+                <span class="stat-label">Courses</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number">{{ total_tests }}</span>
+                <span class="stat-label">Tests Taken</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number">{{ pass_rate }}</span>
+                <span class="stat-label">Certificates Issued</span>
+            </div>
+        </div>
+    </div>
+    <div class="hero-visual">
+        <div class="floating-card card-1">
+            <span class="fc-icon">🏆</span>
+            <div>
+                <div class="fc-title">Certificate Earned!</div>
+                <div class="fc-sub">Python Programming</div>
+            </div>
+        </div>
+        <div class="floating-card card-2">
+            <span class="fc-icon">📊</span>
+            <div>
+                <div class="fc-title">Score: 18/20</div>
+                <div class="fc-sub">Data Science Test</div>
+            </div>
+        </div>
+        <div class="floating-card card-3">
+            <span class="fc-icon">📥</span>
+            <div>
+                <div class="fc-title">PDF Downloaded</div>
+                <div class="fc-sub">Study Material</div>
+            </div>
+        </div>
+        <div class="hero-orb orb-1"></div>
+        <div class="hero-orb orb-2"></div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Everything You Need to Succeed</h2>
+            <p class="section-subtitle">A complete learning ecosystem built for serious students</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon" style="background:#dbeafe;color:#3b82f6">📚</div>
+                <h3>Structured Courses</h3>
+                <p>Well-organized courses across tech, data, security, and more — with clear learning objectives.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background:#dcfce7;color:#22c55e">📄</div>
+                <h3>PDF Study Materials</h3>
+                <p>Download or read comprehensive PDFs for every course. Learn at your own pace, offline.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background:#fef3c7;color:#f59e0b">🧠</div>
+                <h3>Aptitude Tests</h3>
+                <p>20-question randomized tests with shuffled options. Every attempt gives you fresh questions.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background:#fce7f3;color:#ec4899">🏆</div>
+                <h3>Instant Certificates</h3>
+                <p>Pass with 60%+ and instantly download a beautiful PDF certificate with your score.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background:#f0fdf4;color:#16a34a">✅</div>
+                <h3>Answer Review</h3>
+                <p>After submission, see all answers with correct solutions and explanations for learning.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background:#fdf2f8;color:#9333ea">📈</div>
+                <h3>Leaderboard</h3>
+                <p>See top performers across all courses. Get motivated by the community's achievements.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COURSES PREVIEW -->
+<section class="courses-preview">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Featured Courses</h2>
+            <p class="section-subtitle">Start your learning journey today</p>
+        </div>
+        <div class="courses-grid">
+            {% for course in courses %}
+            <div class="course-card" style="--course-color: {{ course.color }}">
+                <div class="course-card-header">
+                    <span class="course-icon">{{ course.icon }}</span>
+                    <span class="course-level level-{{ course.level|lower }}">{{ course.level }}</span>
+                </div>
+                <h3 class="course-title">{{ course.title }}</h3>
+                <p class="course-desc">{{ course.description|truncatewords:20 }}</p>
+                <div class="course-meta">
+                    <span>⏱ {{ course.duration }}</span>
+                    <span>📋 {{ course.questions.count }} questions</span>
+                </div>
+                <div class="course-actions">
+                    <a href="{% url 'course_detail' course.id %}" class="btn btn-primary btn-sm">Start Learning →</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <p>No courses yet. Add courses from the admin panel.</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="center-action">
+            <a href="{% url 'courses' %}" class="btn btn-outline">View All Courses →</a>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">How It Works</h2>
+        </div>
+        <div class="steps-grid">
+            <div class="step">
+                <div class="step-num">01</div>
+                <h3>Pick a Course</h3>
+                <p>Browse our course catalog and choose your subject of interest.</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+                <div class="step-num">02</div>
+                <h3>Study the Material</h3>
+                <p>Read or download PDF study guides to prepare for your test.</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+                <div class="step-num">03</div>
+                <h3>Take the Test</h3>
+                <p>Answer 20 randomized aptitude questions within the time limit.</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+                <div class="step-num">04</div>
+                <h3>Earn Certificate</h3>
+                <p>Score 60%+ to download your personalized PDF certificate!</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
